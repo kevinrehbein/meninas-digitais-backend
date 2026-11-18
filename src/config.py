@@ -13,6 +13,7 @@ OUTPUT_DIR = ROOT_DIR / "data" / "outputs"
 NEO4J_URI = os.getenv("NEO4J_URI")
 NEO4J_USERNAME = os.getenv("NEO4J_USERNAME")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
+NEO4J_DATABASE = os.getenv("NEO4J_DATABASE")
 
 # --- Hiperparâmetros GraphRAG ---
 TOP_K = 10
@@ -41,11 +42,11 @@ EMBEDDING_SPACE = os.getenv("EMBEDDING_SPACE")
 
 
 LLM_CHAIN: list[tuple[str, str]] = [
-    ("google_genai", "gemma-4-26b-a4b-it"),
-    ("google_genai", "gemma-4-31b-it"),
     ("google_genai", "gemini-3.5-flash-lite"),
     ("google_genai", "gemini-3.1-flash-lite"),
     ("google_genai", "gemini-2.5-flash-lite"),
+    ("google_genai", "gemma-4-26b-a4b-it"),
+    ("google_genai", "gemma-4-31b-it"),
     ("google_genai", "gemini-4-hydrogen"),
     ("google_genai", "gemini-3.8-flash"),
     ("google_genai", "gemini-3.6-flash"),
@@ -68,6 +69,7 @@ def validate_config() -> None:
         "NEO4J_URI": NEO4J_URI,
         "NEO4J_USERNAME": NEO4J_USERNAME,
         "NEO4J_PASSWORD": NEO4J_PASSWORD,
+        "NEO4J_DATABASE": NEO4J_DATABASE,
         "EMBEDDING_SPACE": EMBEDDING_SPACE,
     }
     missing = [name for name, value in required.items() if not value]
