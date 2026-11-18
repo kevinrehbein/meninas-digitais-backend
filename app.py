@@ -6,6 +6,11 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from api.main import app
 
+@spaces.GPU(duration=1)
+def _noop() -> None:
+    """Só existe para o ZeroGPU detectar uma função decorada. Nunca é chamada."""
+    return None
+
 if __name__ == "__main__":
     app.launch(
         server_name="0.0.0.0",
