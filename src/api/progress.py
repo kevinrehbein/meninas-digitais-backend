@@ -126,7 +126,7 @@ def describe_update(node: str, update: dict[str, Any]) -> dict[str, Any]:
         detail = f"Veredito: {VERDICT_LABELS.get(verdict, verdict or 'em análise')}"
         if feedback:
             data["feedback"] = _truncate(str(feedback), 500)
-            detail += f" — {_truncate(str(feedback), 220)}"
+            detail += f" — {_truncate(str(feedback), 200)}"
     elif node == "redator":
         detail = "Texto da resposta gerado"
     elif node == "planejador":
