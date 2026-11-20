@@ -93,7 +93,7 @@ def describe_update(node: str, update: dict[str, Any]) -> dict[str, Any]:
         data = {"intent": intent, "complexity": complexity}
         detail = (
             f"Intenção: {INTENT_LABELS.get(intent, intent or 'não identificada')}"
-            f" · complexidade {COMPLEXITY_LABELS.get(complexity, complexity)}"
+            f" - complexidade: {COMPLEXITY_LABELS.get(complexity, complexity)}"
         )
     elif node == "decompositor":
         steps = [str(step) for step in update.get("plan_steps") or []]
@@ -103,12 +103,7 @@ def describe_update(node: str, update: dict[str, Any]) -> dict[str, Any]:
         calls = _tool_calls(update)
         data = {"tools": calls}
         if calls:
-            first = calls[0]
-            detail = f"{first['label'].capitalize()}"
-            if first["query"]:
-                detail += f": “{first['query']}”"
-            if len(calls) > 1:
-                detail += f" + {len(calls) - 1} consulta(s)"
+            detail = f"{len(calls)} consulta(s) a ser realizada(s)"
         else:
             detail = "Selecionando ferramentas de pesquisa"
     elif node == "pesquisador_tools":
@@ -126,7 +121,6 @@ def describe_update(node: str, update: dict[str, Any]) -> dict[str, Any]:
         detail = f"Veredito: {VERDICT_LABELS.get(verdict, verdict or 'em análise')}"
         if feedback:
             data["feedback"] = _truncate(str(feedback), 500)
-            detail += f" — {_truncate(str(feedback), 200)}"
     elif node == "redator":
         detail = "Texto da resposta gerado"
     elif node == "planejador":
