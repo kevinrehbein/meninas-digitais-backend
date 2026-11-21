@@ -3,7 +3,7 @@ import re
 from agents.utils import message_text
 
 FONTE_RE = re.compile(
-    r"\[FONTE:\s*(?P<title>.+?)\s*\|\s*(?P<url>https?://[^\s\]]+)\s*\]"
+    r"FONTE:\s*\[(?P<title>[^\]]+)\]\((?P<url>https?://[^)\s]+)\)"
 )
 
 
