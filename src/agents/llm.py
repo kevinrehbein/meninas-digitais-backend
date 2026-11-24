@@ -8,6 +8,7 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.runnables import Runnable
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel
+from langchain_core.output_parsers import PydanticOutputParser
 
 from config import LLM_CHAIN, PROVIDER_API_KEYS
 
@@ -67,7 +68,22 @@ def get_llm(temperature: float = 0.0) -> Runnable:
 
 
 def get_structured_llm(schema: type[BaseModel], temperature: float = 0.0) -> Runnable:
-    return _compose(lambda m: m.with_structured_output(schema), temperature)
+    parser = PydanticOutputParser(pydantic_object=schema)
+    format_instructions = parser.get_format_instructions()
+
+    def _bind(m: BaseChatModel) -> Runnable:
+        if getattr(m, "_llm_type", "") == "openrouter-chat":
+            # Ativa o JSON mode nativo do OpenRouter sem schema enforcement
+            json_model = m.bind(response_format={"type": "json_object"})
+            # Injeta as instruções do schema no início da conversa e parseia o JSON
+            return (
+                (lambda msgs: [{"role": "system", "content": format_instructions}, *msgs])
+                | json_model
+                | parser
+            )
+        return m.with_structured_output(schema)
+
+    return _compose(_bind, temperature)
 
 
 def get_llm_with_tools(tools: Sequence[BaseTool], temperature: float = 0.0) -> Runnable:
