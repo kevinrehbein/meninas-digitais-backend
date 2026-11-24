@@ -30,7 +30,8 @@ def _available_models(temperature: float) -> tuple[BaseChatModel, ...]:
                     model_provider=provider,
                     temperature=temperature,
                     max_retries=0,
-                    timeout=45
+                    timeout=45,
+                    reasoning={"effort": "none"},
                 )
             )
         except Exception as exc:  # provedor/modelo indisponível não deve derrubar o app
