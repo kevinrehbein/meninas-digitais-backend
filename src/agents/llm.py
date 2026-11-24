@@ -20,19 +20,31 @@ def _available_models(temperature: float) -> tuple[BaseChatModel, ...]:
     models: list[BaseChatModel] = []
     for provider, name in LLM_CHAIN:
         key_var = PROVIDER_API_KEYS.get(provider)
+        api_key = os.getenv(key_var) if key_var else None
         if key_var and not os.getenv(key_var):
             logger.debug("Ignorando %s/%s: %s não definida", provider, name, key_var)
             continue
         try:
-            models.append(
-                init_chat_model(
+            if provider == "openrouter":
+                model = init_chat_model(
+                    model=name,
+                    model_provider="openai",
+                    base_url="https://openrouter.ai/api/v1",
+                    api_key=api_key,
+                    temperature=temperature,
+                    max_retries=0,
+                    timeout=45,
+                    extra_body={"reasoning": {"effort": "none"}},
+                )
+            else:
+                model = init_chat_model(
                     model=name,
                     model_provider=provider,
                     temperature=temperature,
                     max_retries=0,
-                    timeout=45
+                    timeout=45,
                 )
-            )
+            models.append(model)
         except Exception as exc:  # provedor/modelo indisponível não deve derrubar o app
             logger.warning("Falha ao inicializar %s/%s: %s", provider, name, exc)
     if not models:
