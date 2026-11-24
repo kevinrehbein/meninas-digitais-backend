@@ -5,6 +5,7 @@ langchain>=1.5.0
 langchain-core>=1.8.2
 langchain-google-genai>=4.5.0
 langchain-groq>=1.2.0
+langchain-openrouter
 langchain-neo4j>=0.11.0
 langchain-openai>=1.8.1
 langgraph>=1.2.22
